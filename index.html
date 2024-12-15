@@ -6,17 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تحدي جدول الضرب</title>
     <style>
-      /* الأساسيات */
+            /* الأساسيات */
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
-
-    body {
-      font-family: Arial, sans-serif;
-    }
-
+    
     /* حاوية مرنة */
     .container {
       display: flex;
@@ -26,27 +22,22 @@
 
     /* عناصر داخل الحاوية */
     .item {
-      flex: 1 1 100px; /* يمكن تعديل هذه القيمة حسب الحاجة */
+      flex: 1 1 45%; /* استخدام نسبة مئوية لضمان المرونة */
       margin: 10px;
       padding: 20px;
       background-color: #f0f0f0;
       text-align: center;
+      min-width: 200px; /* لضمان الحد الأدنى من العرض على الشاشات الصغيرة */
     }
 
     /* قواعد ميديا للشاشات الصغيرة */
     @media (max-width: 768px) {
       .item {
-        flex: 1 1 70%;
+        flex: 1 1 100%; /* تجعل العنصر بعرض 100% على الشاشات الصغيرة */
       }
     }
-
-    /* قواعد ميديا للشاشات المتوسطة */
-    @media (min-width: 769px) and (max-width: 1024px) {
-      .item {
-        flex: 1 1 20%;
-      }
-    }
-        body {
+    
+body {
             font-family: Arial, sans-serif;
             text-align: center;
             background-color: #f9f9f9;
@@ -55,11 +46,11 @@
         }
 
         #table-select {
-            width: 100px;
+            width: 200px;
             /* زيادة العرض */
             padding: 10px;
             /* زيادة مساحة الداخل */
-            font-size: 14px;
+            font-size: 18px;
             /* تكبير الخط */
             border: 2px solid #4CAF50;
             border-radius: 5px;
@@ -209,9 +200,6 @@
         }
     </style>
 </head>
-
-<body>
-
     <h1>تحدي جدول الضرب</h1>
     <div class="controls">
         <select id="table-select">
@@ -255,7 +243,7 @@
     </div>
 
     <footer>
-        <p>تم إنتاجه بواسطة الذكاء الاصطناعي</p>
+        <p>فكرة وتصميم قناة فنون الرياضيات بإشراف المعلمة/سعاد الغامدي وتم إنتاجه بواسطة الذكاء الاصطناعي</p>
     </footer>
 
     <script>
