@@ -17,9 +17,7 @@
 
         #table-select {
             width: 80%;
-            /* العرض النسبي */
             max-width: 300px;
-            /* الحد الأقصى للعرض */
             padding: 1rem;
             font-size: 1.2rem;
             border: 2px solid #4CAF50;
@@ -33,13 +31,10 @@
         .wheel-container {
             margin: 2rem auto;
             position: relative;
-            width: 90%;
-            /* العرض النسبي */
-            max-width: 400px;
-            /* الحد الأقصى للعرض */
+            width: 90%; /* العرض النسبي */
+            max-width: 400px; /* الحد الأقصى للعرض */
             height: 0;
-            padding-top: 90%;
-            /* النسبة للحفاظ على الشكل الدائري */
+            padding-top: 90%; /* النسبة للحفاظ على الشكل الدائري */
         }
 
         .wheel {
@@ -52,24 +47,23 @@
                     #99ffff 144deg 180deg, #99ccff 180deg 216deg,
                     #cc99ff 216deg 252deg, #ff99cc 252deg 288deg,
                     #ff6666 288deg 324deg, #66ff66 324deg 360deg);
+            position: absolute;
+            top: 0;
+            left: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            position: relative;
         }
 
         .wheel span {
             position: absolute;
-            font-size: 2rem;
-            /* استخدام وحدة نسبية */
+            font-size: 2rem; /* نص نسبي */
             transform-origin: center;
-            transform: rotate(calc(var(--angle) * 1deg + 18deg)) translateY(-50%);
+            transform: rotate(calc(var(--angle) * 1deg + 18deg)) translateY(-45%);
             background: #fff;
             border-radius: 50%;
-            width: 10%;
-            /* العرض النسبي */
-            height: 10%;
-            /* الطول النسبي */
+            width: 10%; /* العرض النسبي */
+            height: 10%; /* الطول النسبي */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -77,7 +71,8 @@
 
         .pointer {
             width: 2%;
-            height: 50%;
+            max-width: 5px; /* الحد الأقصى للعرض */
+            height: 45%;
             background-color: black;
             position: absolute;
             bottom: 50%;
@@ -95,8 +90,7 @@
 
         .answers {
             display: flex;
-            flex-wrap: wrap;
-            /* يسمح بالمرونة */
+            flex-wrap: wrap; /* يسمح بالمرونة */
             justify-content: center;
             gap: 1rem;
             margin-top: 1.5rem;
@@ -111,10 +105,8 @@
             cursor: pointer;
             border-radius: 8px;
             transition: 0.3s;
-            flex: 1 1 calc(45% - 1rem);
-            /* يجعل الأزرار متساوية ويأخذ 45% من العرض */
-            max-width: 200px;
-            /* الحد الأقصى للعرض */
+            flex: 1 1 calc(45% - 1rem); /* يجعل الأزرار متساوية ويأخذ 45% من العرض */
+            max-width: 200px; /* الحد الأقصى للعرض */
         }
 
         footer {
@@ -129,10 +121,18 @@
 
         /* تحسين العرض لأجهزة التابلت */
         @media (max-width: 768px) {
-
             .question,
             .score {
                 font-size: 1.3rem;
+            }
+
+            .wheel-container {
+                max-width: 300px;
+                padding-top: 90%;
+            }
+
+            .wheel span {
+                font-size: 1.5rem;
             }
 
             .answers button {
@@ -148,13 +148,20 @@
             }
 
             .wheel-container {
-                width: 90%;
+                max-width: 250px;
                 padding-top: 90%;
             }
 
+            .wheel span {
+                font-size: 1.2rem;
+            }
+
+            .pointer {
+                height: 40%;
+            }
+
             .answers button {
-                flex: 1 1 calc(100% - 1rem);
-                /* الأزرار تأخذ العرض الكامل */
+                flex: 1 1 calc(100% - 1rem); /* الأزرار تأخذ العرض الكامل */
                 font-size: 0.8rem;
                 padding: 0.5rem 1rem;
             }
@@ -163,11 +170,9 @@
 </head>
 
 <body>
-
-    <h1>تحدي جدول الضرب</h1>
     <div class="controls">
         <select id="table-select">
-            <option value="" selected disabled>اختر جدول الضرب</option>
+            <option value="" disabled selected>اختر جدول الضرب</option>
             <option value="1">جدول ١</option>
             <option value="2">جدول ٢</option>
             <option value="3">جدول ٣</option>
@@ -196,171 +201,6 @@
             <div class="pointer" id="pointer"></div>
         </div>
     </div>
-
-    <div class="question" id="question">اختر جدول الضرب للبدء.</div>
-    <div class="answers" id="answers"></div>
-    <div class="score" id="score">درجاتك: ٠</div>
-    <div class="timer" id="timer">الوقت المتبقي: 10</div>
-    <div class="end-screen" id="end-screen">
-        <p>شكراً لمشاركتك في اللعبة! درجاتك: <span id="final-score"></span></p>
-        <button onclick="restartGame()">ابدأ من جديد</button>
-    </div>
-
-    <footer>
-        <p>فكرة وتصميم قناة فنون الرياضيات بإشراف المعلمة/سعاد الغامدي وتم إنتاجه بواسطة الذكاء الاصطناعي</p>
-    </footer>
-
-    <script>
-        const wheel = document.getElementById('wheel');
-        const pointer = document.getElementById('pointer');
-        const tableSelect = document.getElementById('table-select');
-        const questionDiv = document.getElementById('question');
-        const answersDiv = document.getElementById('answers');
-        const scoreDiv = document.getElementById('score');
-        const timerDiv = document.getElementById('timer');
-        const endScreen = document.getElementById('end-screen');
-        const finalScoreSpan = document.getElementById('final-score');
-
-        let score = 0;
-        let totalRounds = 10;
-        let currentRound = 0;
-        let selectedTable = null;
-        let timer;
-        let timeLeft = 10;
-
-        tableSelect.addEventListener('change', () => {
-            selectedTable = parseInt(tableSelect.value);
-            resetGame();
-            startNextRound();
-        });
-
-        function startNextRound() {
-            if (currentRound >= totalRounds) {
-                endGame();
-                return;
-            }
-
-            currentRound++;
-            timeLeft = 10;
-            timerDiv.textContent = `الوقت المتبقي: ${convertToArabicNumerals(timeLeft)}`;
-            startTimer();
-
-            const randomAngle = Math.floor(Math.random() * 360);
-            const selectedNumber = Math.ceil((randomAngle % 360) / 36) || 10;
-            pointer.style.transform = `rotate(${randomAngle - (randomAngle % 36) + 18}deg)`;
-
-            setTimeout(() => {
-                generateQuestion(selectedTable, selectedNumber);
-            }, 2000);
-        }
-
-        function startTimer() {
-            clearInterval(timer); // إيقاف أي عداد سابق
-            timer = setInterval(() => {
-                timeLeft--; // تقليل الوقت بمقدار 1
-                timerDiv.textContent = `الوقت المتبقي: ${convertToArabicNumerals(timeLeft)}`; // تحديث النص
-                if (timeLeft <= 0) {
-                    clearInterval(timer); // إيقاف العداد عند انتهاء الوقت
-                    handleMissedAnswer(); // معالجة الإجابة المفقودة
-                }
-            }, 1000);
-        }
-
-        function convertToArabicNumerals(number) {
-            // تحويل الرقم إلى نص، ثم استبدال كل الأرقام باستخدام المصفوفة
-            const arabicNumbers = '٠١٢٣٤٥٦٧٨٩';
-            return String(number).split('').map(char => arabicNumbers[char] || char).join('');
-        }
-
-
-
-        function generateQuestion(table, number) {
-            const correctAnswer = table * number;
-            const wrongAnswers = generateWrongAnswers(table, number, correctAnswer);
-
-            const answers = [correctAnswer, ...wrongAnswers].sort(() => Math.random() - 0.5);
-            questionDiv.textContent = `${convertToArabicNumerals(table)} × ${convertToArabicNumerals(number)} = ؟`;
-            answersDiv.innerHTML = '';
-
-            answers.forEach(answer => {
-                const btn = document.createElement('button');
-                btn.textContent = convertToArabicNumerals(answer);
-                btn.addEventListener('click', () => checkAnswer(answer, correctAnswer));
-                answersDiv.appendChild(btn);
-            });
-        }
-
-        function generateWrongAnswers(table, number, correctAnswer) {
-            const wrongAnswers = [];
-            while (wrongAnswers.length < 2) {
-                const randomMultiplier = Math.floor(Math.random() * 10) + 1;
-                const wrongAnswer = table * randomMultiplier;
-                if (wrongAnswer !== correctAnswer && !wrongAnswers.includes(wrongAnswer)) {
-                    wrongAnswers.push(wrongAnswer);
-                }
-            }
-            return wrongAnswers;
-        }
-
-        function checkAnswer(selected, correct) {
-            clearInterval(timer);
-
-            answersDiv.querySelectorAll('button').forEach(btn => {
-                const btnValue = parseInt(btn.textContent.replace(/[٠-٩]/g, d => '0123456789'[d.charCodeAt(0) - '٠'.charCodeAt(0)]));
-                btn.disabled = true;
-
-                if (btnValue === correct) {
-                    btn.classList.add('correct'); // إضافة الكلاس للإجابة الصحيحة
-                } else if (btnValue === selected) {
-                    btn.classList.add('wrong'); // إضافة الكلاس للإجابة الخاطئة
-                }
-            });
-
-            if (selected === correct) score++;
-            scoreDiv.textContent = `درجاتك: ${convertToArabicNumerals(score)}`;
-
-            setTimeout(startNextRound, 1000);
-        }
-
-        // دالة لمعالجة الإجابة المفقودة عند انتهاء الوقت
-        function handleMissedAnswer() {
-            answersDiv.querySelectorAll('button').forEach(btn => (btn.disabled = true));
-            setTimeout(startNextRound, 1000); // الانتقال إلى الجولة التالية بعد ثانية
-        }
-
-        function endGame() {
-            questionDiv.style.display = 'none';
-            answersDiv.style.display = 'none';
-            timerDiv.style.display = 'none';
-            endScreen.style.display = 'block';
-            finalScoreSpan.textContent = `${convertToArabicNumerals(score)}`;
-        }
-
-        function restartGame() {
-            location.reload();
-        }
-
-        function resetGame() {
-            score = 0;
-            currentRound = 0;
-            questionDiv.style.display = 'block';
-            answersDiv.style.display = 'flex';
-            timerDiv.style.display = 'block';
-            endScreen.style.display = 'none';
-            scoreDiv.textContent = `درجاتك: ${convertToArabicNumerals(score)}`;
-        }
-
-        // دالة تحويل الأرقام الإنجليزية إلى الهندية
-        function convertToArabicNumerals(number) {
-            // تأكد من تحويل الرقم إلى نص ثم استبدال كل الأرقام
-            return number
-                .toString() // تحويل الرقم إلى نص
-                .replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]); // استبدال الأرقام الإنجليزية إلى هندية
-        }
-
-    </script>
-
-
 </body>
 
 </html>
