@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحدي جدول الضرب</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f9f9f9;
+            color: #333;
+            padding: 20px;
+        }
+
+        #table-select {
+        width: 200px; /* زيادة العرض */
+        padding: 10px; /* زيادة مساحة الداخل */
+        font-size: 18px; /* تكبير الخط */
+        border: 2px solid #4CAF50;
+        border-radius: 5px;
+    }
+        .controls {
+            margin-bottom: 20px;
+        }
+
+        .wheel-container {
+            margin: 30px auto;
+            position: relative;
+            width: 500px;
+            height: 500px;
+        }
+
+        .wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 5px solid #4CAF50;
+            background: conic-gradient(#ffcccc 0% 36deg, #ffcc99 36deg 72deg,
+                    #ffff99 72deg 108deg, #ccff99 108deg 144deg,
+                    #99ffff 144deg 180deg, #99ccff 180deg 216deg,
+                    #cc99ff 216deg 252deg, #ff99cc 252deg 288deg,
+                    #ff6666 288deg 324deg, #66ff66 324deg 360deg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .wheel span {
+            position: absolute;
+            font-size: 28px;
+            transform-origin: center;
+            transform: rotate(calc(var(--angle) * 1deg + 18deg)) translateY(-190px);
+            background: #fff;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .pointer {
+            width: 2px;
+            height: 250px;
+            background-color: black;
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom;
+            transform: rotate(0deg);
+            transition: transform 2s ease-out;
+        }
+
+        .question,
+        .score {
+            margin: 20px 0;
+            font-size: 32px;
+        }
+
+        .answers {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .answers button {
+            background-color: #fff;
+            border: 2px solid #4CAF50;
+            color: #333;
+            padding: 15px 30px;
+            font-size: 24px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+        #end-btn {
+            margin-top: 20px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        #end-btn:hover {
+            background-color: #c82333;
+        }
+
+        .end-screen {
+            display: none;
+            margin-top: 20px;
+            font-size: 28px;
+            color: #4CAF50;
+        }
+
+        .end-screen button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .end-screen button:hover {
+            background-color: #45a049;
+        }
+
+        footer {
+            margin-top: 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 14px;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .answers button.correct {
+            background-color: #c8e6c9 !important;
+            /* أخضر خفيف */
+            border-color: #4CAF50 !important;
+        }
+
+        .answers button.wrong {
+            background-color: #f8d7da !important;
+            /* أحمر خفيف */
+            border-color: #dc3545 !important;
+        }
+
+        .timer {
+            font-size: 24px;
+            margin-top: 10px;
+        }
+    </style>
+   </head>
+
+<body>
+
+    <h1>تحدي جدول الضرب</h1>
+    <div class="controls">
+        <select id="table-select">
+            <option value="" selected disabled>اختر جدول الضرب</option>
+            <option value="1">جدول ١</option>
+            <option value="2">جدول ٢</option>
+            <option value="3">جدول ٣</option>
+            <option value="4">جدول ٤</option>
+            <option value="5">جدول ٥</option>
+            <option value="6">جدول ٦</option>
+            <option value="7">جدول ٧</option>
+            <option value="8">جدول ٨</option>
+            <option value="9">جدول ٩</option>
+            <option value="10">جدول ١٠</option>
+        </select>
+    </div>
+
+    <div class="wheel-container">
+        <div class="wheel" id="wheel">
+            <span style="--angle: 0;">١</span>
+            <span style="--angle: 36;">٢</span>
+            <span style="--angle: 72;">٣</span>
+            <span style="--angle: 108;">٤</span>
+            <span style="--angle: 144;">٥</span>
+            <span style="--angle: 180;">٦</span>
+            <span style="--angle: 216;">٧</span>
+            <span style="--angle: 252;">٨</span>
+            <span style="--angle: 288;">٩</span>
+            <span style="--angle: 324;">١٠</span>
+            <div class="pointer" id="pointer"></div>
+        </div>
+    </div>
+
+    <div class="question" id="question">اختر جدول الضرب للبدء.</div>
+    <div class="answers" id="answers"></div>
+    <div class="score" id="score">درجاتك: ٠</div>
+    <div class="timer" id="timer">الوقت المتبقي: 10</div>
+    <div class="end-screen" id="end-screen">
+        <p>شكراً لمشاركتك في اللعبة! درجاتك: <span id="final-score"></span></p>
+        <button onclick="restartGame()">ابدأ من جديد</button>
+    </div>
+
+    <footer>
+        <p>تم إنتاجه بواسطة الذكاء الاصطناعي</p>
+    </footer>
+
+<script>
+    const wheel = document.getElementById('wheel');
+    const pointer = document.getElementById('pointer');
+    const tableSelect = document.getElementById('table-select');
+    const questionDiv = document.getElementById('question');
+    const answersDiv = document.getElementById('answers');
+    const scoreDiv = document.getElementById('score');
+    const timerDiv = document.getElementById('timer');
+    const endScreen = document.getElementById('end-screen');
+    const finalScoreSpan = document.getElementById('final-score');
+
+    let score = 0;
+    let totalRounds = 10;
+    let currentRound = 0;
+    let selectedTable = null;
+    let timer;
+    let timeLeft = 10;
+
+    tableSelect.addEventListener('change', () => {
+        selectedTable = parseInt(tableSelect.value);
+        resetGame();
+        startNextRound();
+    });
+
+    function startNextRound() {
+        if (currentRound >= totalRounds) {
+            endGame();
+            return;
+        }
+
+        currentRound++;
+        timeLeft = 10;
+        timerDiv.textContent = `الوقت المتبقي: ${convertToArabicNumerals(timeLeft)}`;
+        startTimer();
+
+        const randomAngle = Math.floor(Math.random() * 360);
+        const selectedNumber = Math.ceil((randomAngle % 360) / 36) || 10;
+        pointer.style.transform = `rotate(${randomAngle - (randomAngle % 36) + 18}deg)`;
+
+        setTimeout(() => {
+            generateQuestion(selectedTable, selectedNumber);
+        }, 2000);
+    }
+
+   function startTimer() {
+        clearInterval(timer); // إيقاف أي عداد سابق
+        timer = setInterval(() => {
+            timeLeft--; // تقليل الوقت بمقدار 1
+            timerDiv.textContent = `الوقت المتبقي: ${convertToArabicNumerals(timeLeft)}`; // تحديث النص
+            if (timeLeft <= 0) {
+                clearInterval(timer); // إيقاف العداد عند انتهاء الوقت
+                handleMissedAnswer(); // معالجة الإجابة المفقودة
+            }
+        }, 1000);
+    }
+
+    function convertToArabicNumerals(number) {
+            // تحويل الرقم إلى نص، ثم استبدال كل الأرقام باستخدام المصفوفة
+            const arabicNumbers = '٠١٢٣٤٥٦٧٨٩';
+            return String(number).split('').map(char => arabicNumbers[char] || char).join('');
+        }
+
+
+
+    function generateQuestion(table, number) {
+        const correctAnswer = table * number;
+        const wrongAnswers = generateWrongAnswers(table, number, correctAnswer);
+
+        const answers = [correctAnswer, ...wrongAnswers].sort(() => Math.random() - 0.5);
+        questionDiv.textContent = `${convertToArabicNumerals(table)} × ${convertToArabicNumerals(number)} = ؟`;
+        answersDiv.innerHTML = '';
+
+        answers.forEach(answer => {
+            const btn = document.createElement('button');
+            btn.textContent = convertToArabicNumerals(answer);
+            btn.addEventListener('click', () => checkAnswer(answer, correctAnswer));
+            answersDiv.appendChild(btn);
+        });
+    }
+
+    function generateWrongAnswers(table, number, correctAnswer) {
+        const wrongAnswers = [];
+        while (wrongAnswers.length < 2) {
+            const randomMultiplier = Math.floor(Math.random() * 10) + 1;
+            const wrongAnswer = table * randomMultiplier;
+            if (wrongAnswer !== correctAnswer && !wrongAnswers.includes(wrongAnswer)) {
+                wrongAnswers.push(wrongAnswer);
+            }
+        }
+        return wrongAnswers;
+    }
+
+     function checkAnswer(selected, correct) {
+            clearInterval(timer);
+
+            answersDiv.querySelectorAll('button').forEach(btn => {
+                const btnValue = parseInt(btn.textContent.replace(/[٠-٩]/g, d => '0123456789'[d.charCodeAt(0) - '٠'.charCodeAt(0)]));
+                btn.disabled = true;
+
+                if (btnValue === correct) {
+                    btn.classList.add('correct'); // إضافة الكلاس للإجابة الصحيحة
+                } else if (btnValue === selected) {
+                    btn.classList.add('wrong'); // إضافة الكلاس للإجابة الخاطئة
+                }
+            });
+
+            if (selected === correct) score++;
+            scoreDiv.textContent = `درجاتك: ${convertToArabicNumerals(score)}`;
+
+            setTimeout(startNextRound, 1000);
+        }
+
+    // دالة لمعالجة الإجابة المفقودة عند انتهاء الوقت
+        function handleMissedAnswer() {
+            answersDiv.querySelectorAll('button').forEach(btn => (btn.disabled = true));
+            setTimeout(startNextRound, 1000); // الانتقال إلى الجولة التالية بعد ثانية
+        }
+
+    function endGame() {
+        questionDiv.style.display = 'none';
+        answersDiv.style.display = 'none';
+        timerDiv.style.display = 'none';
+        endScreen.style.display = 'block';
+        finalScoreSpan.textContent = `${convertToArabicNumerals(score)}`;
+    }
+
+    function restartGame() {
+        location.reload();
+    }
+
+    function resetGame() {
+        score = 0;
+        currentRound = 0;
+        questionDiv.style.display = 'block';
+        answersDiv.style.display = 'flex';
+        timerDiv.style.display = 'block';
+        endScreen.style.display = 'none';
+        scoreDiv.textContent = `درجاتك: ${convertToArabicNumerals(score)}`;
+    }
+
+   // دالة تحويل الأرقام الإنجليزية إلى الهندية
+    function convertToArabicNumerals(number) {
+        // تأكد من تحويل الرقم إلى نص ثم استبدال كل الأرقام
+        return number
+            .toString() // تحويل الرقم إلى نص
+            .replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]); // استبدال الأرقام الإنجليزية إلى هندية
+    }
+
+</script>
+
+
+</body>
+
+</html>
