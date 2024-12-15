@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تحدي جدول الضرب</title>
-    <style>
+        <title>تحدي جدول الضرب</title>
+        <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
@@ -15,12 +15,39 @@
         }
 
         #table-select {
-        width: 200px; /* زيادة العرض */
-        padding: 10px; /* زيادة مساحة الداخل */
-        font-size: 18px; /* تكبير الخط */
-        border: 2px solid #4CAF50;
-        border-radius: 5px;
+            width: 200px;
+            /* زيادة العرض */
+            padding: 10px;
+            /* زيادة مساحة الداخل */
+            font-size: 18px;
+            /* تكبير الخط */
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+        }
+
+        .container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 0 20px;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 0 10px;
     }
+}
+
+@media (max-width: 480px) {
+    body {
+        font-size: 14px;
+    }
+}
+        
         .controls {
             margin-bottom: 20px;
         }
@@ -164,7 +191,7 @@
             margin-top: 10px;
         }
     </style>
-   </head>
+</head>
 
 <body>
 
@@ -211,66 +238,66 @@
     </div>
 
     <footer>
-        <p>تصميم وفكرة قناة فنون الرياضيات بإشراف المعلمة/سعاد الغامدي ـ تنفيذ/الذكاء الاصطناعي</p>
+        <p>تم إنتاجه بواسطة الذكاء الاصطناعي</p>
     </footer>
 
-<script>
-    const wheel = document.getElementById('wheel');
-    const pointer = document.getElementById('pointer');
-    const tableSelect = document.getElementById('table-select');
-    const questionDiv = document.getElementById('question');
-    const answersDiv = document.getElementById('answers');
-    const scoreDiv = document.getElementById('score');
-    const timerDiv = document.getElementById('timer');
-    const endScreen = document.getElementById('end-screen');
-    const finalScoreSpan = document.getElementById('final-score');
+    <script>
+        const wheel = document.getElementById('wheel');
+        const pointer = document.getElementById('pointer');
+        const tableSelect = document.getElementById('table-select');
+        const questionDiv = document.getElementById('question');
+        const answersDiv = document.getElementById('answers');
+        const scoreDiv = document.getElementById('score');
+        const timerDiv = document.getElementById('timer');
+        const endScreen = document.getElementById('end-screen');
+        const finalScoreSpan = document.getElementById('final-score');
 
-    let score = 0;
-    let totalRounds = 10;
-    let currentRound = 0;
-    let selectedTable = null;
-    let timer;
-    let timeLeft = 10;
+        let score = 0;
+        let totalRounds = 10;
+        let currentRound = 0;
+        let selectedTable = null;
+        let timer;
+        let timeLeft = 10;
 
-    tableSelect.addEventListener('change', () => {
-        selectedTable = parseInt(tableSelect.value);
-        resetGame();
-        startNextRound();
-    });
+        tableSelect.addEventListener('change', () => {
+            selectedTable = parseInt(tableSelect.value);
+            resetGame();
+            startNextRound();
+        });
 
-    function startNextRound() {
-        if (currentRound >= totalRounds) {
-            endGame();
-            return;
+        function startNextRound() {
+            if (currentRound >= totalRounds) {
+                endGame();
+                return;
+            }
+
+            currentRound++;
+            timeLeft = 10;
+            timerDiv.textContent = `الوقت المتبقي: ${convertToArabicNumerals(timeLeft)}`;
+            startTimer();
+
+            const randomAngle = Math.floor(Math.random() * 360);
+            const selectedNumber = Math.ceil((randomAngle % 360) / 36) || 10;
+            pointer.style.transform = `rotate(${randomAngle - (randomAngle % 36) + 18}deg)`;
+
+            setTimeout(() => {
+                generateQuestion(selectedTable, selectedNumber);
+            }, 2000);
         }
 
-        currentRound++;
-        timeLeft = 10;
-        timerDiv.textContent = `الوقت المتبقي: ${convertToArabicNumerals(timeLeft)}`;
-        startTimer();
+        function startTimer() {
+            clearInterval(timer); // إيقاف أي عداد سابق
+            timer = setInterval(() => {
+                timeLeft--; // تقليل الوقت بمقدار 1
+                timerDiv.textContent = `الوقت المتبقي: ${convertToArabicNumerals(timeLeft)}`; // تحديث النص
+                if (timeLeft <= 0) {
+                    clearInterval(timer); // إيقاف العداد عند انتهاء الوقت
+                    handleMissedAnswer(); // معالجة الإجابة المفقودة
+                }
+            }, 1000);
+        }
 
-        const randomAngle = Math.floor(Math.random() * 360);
-        const selectedNumber = Math.ceil((randomAngle % 360) / 36) || 10;
-        pointer.style.transform = `rotate(${randomAngle - (randomAngle % 36) + 18}deg)`;
-
-        setTimeout(() => {
-            generateQuestion(selectedTable, selectedNumber);
-        }, 2000);
-    }
-
-   function startTimer() {
-        clearInterval(timer); // إيقاف أي عداد سابق
-        timer = setInterval(() => {
-            timeLeft--; // تقليل الوقت بمقدار 1
-            timerDiv.textContent = `الوقت المتبقي: ${convertToArabicNumerals(timeLeft)}`; // تحديث النص
-            if (timeLeft <= 0) {
-                clearInterval(timer); // إيقاف العداد عند انتهاء الوقت
-                handleMissedAnswer(); // معالجة الإجابة المفقودة
-            }
-        }, 1000);
-    }
-
-    function convertToArabicNumerals(number) {
+        function convertToArabicNumerals(number) {
             // تحويل الرقم إلى نص، ثم استبدال كل الأرقام باستخدام المصفوفة
             const arabicNumbers = '٠١٢٣٤٥٦٧٨٩';
             return String(number).split('').map(char => arabicNumbers[char] || char).join('');
@@ -278,35 +305,35 @@
 
 
 
-    function generateQuestion(table, number) {
-        const correctAnswer = table * number;
-        const wrongAnswers = generateWrongAnswers(table, number, correctAnswer);
+        function generateQuestion(table, number) {
+            const correctAnswer = table * number;
+            const wrongAnswers = generateWrongAnswers(table, number, correctAnswer);
 
-        const answers = [correctAnswer, ...wrongAnswers].sort(() => Math.random() - 0.5);
-        questionDiv.textContent = `${convertToArabicNumerals(table)} × ${convertToArabicNumerals(number)} = ؟`;
-        answersDiv.innerHTML = '';
+            const answers = [correctAnswer, ...wrongAnswers].sort(() => Math.random() - 0.5);
+            questionDiv.textContent = `${convertToArabicNumerals(table)} × ${convertToArabicNumerals(number)} = ؟`;
+            answersDiv.innerHTML = '';
 
-        answers.forEach(answer => {
-            const btn = document.createElement('button');
-            btn.textContent = convertToArabicNumerals(answer);
-            btn.addEventListener('click', () => checkAnswer(answer, correctAnswer));
-            answersDiv.appendChild(btn);
-        });
-    }
-
-    function generateWrongAnswers(table, number, correctAnswer) {
-        const wrongAnswers = [];
-        while (wrongAnswers.length < 2) {
-            const randomMultiplier = Math.floor(Math.random() * 10) + 1;
-            const wrongAnswer = table * randomMultiplier;
-            if (wrongAnswer !== correctAnswer && !wrongAnswers.includes(wrongAnswer)) {
-                wrongAnswers.push(wrongAnswer);
-            }
+            answers.forEach(answer => {
+                const btn = document.createElement('button');
+                btn.textContent = convertToArabicNumerals(answer);
+                btn.addEventListener('click', () => checkAnswer(answer, correctAnswer));
+                answersDiv.appendChild(btn);
+            });
         }
-        return wrongAnswers;
-    }
 
-     function checkAnswer(selected, correct) {
+        function generateWrongAnswers(table, number, correctAnswer) {
+            const wrongAnswers = [];
+            while (wrongAnswers.length < 2) {
+                const randomMultiplier = Math.floor(Math.random() * 10) + 1;
+                const wrongAnswer = table * randomMultiplier;
+                if (wrongAnswer !== correctAnswer && !wrongAnswers.includes(wrongAnswer)) {
+                    wrongAnswers.push(wrongAnswer);
+                }
+            }
+            return wrongAnswers;
+        }
+
+        function checkAnswer(selected, correct) {
             clearInterval(timer);
 
             answersDiv.querySelectorAll('button').forEach(btn => {
@@ -326,43 +353,43 @@
             setTimeout(startNextRound, 1000);
         }
 
-    // دالة لمعالجة الإجابة المفقودة عند انتهاء الوقت
+        // دالة لمعالجة الإجابة المفقودة عند انتهاء الوقت
         function handleMissedAnswer() {
             answersDiv.querySelectorAll('button').forEach(btn => (btn.disabled = true));
             setTimeout(startNextRound, 1000); // الانتقال إلى الجولة التالية بعد ثانية
         }
 
-    function endGame() {
-        questionDiv.style.display = 'none';
-        answersDiv.style.display = 'none';
-        timerDiv.style.display = 'none';
-        endScreen.style.display = 'block';
-        finalScoreSpan.textContent = `${convertToArabicNumerals(score)}`;
-    }
+        function endGame() {
+            questionDiv.style.display = 'none';
+            answersDiv.style.display = 'none';
+            timerDiv.style.display = 'none';
+            endScreen.style.display = 'block';
+            finalScoreSpan.textContent = `${convertToArabicNumerals(score)}`;
+        }
 
-    function restartGame() {
-        location.reload();
-    }
+        function restartGame() {
+            location.reload();
+        }
 
-    function resetGame() {
-        score = 0;
-        currentRound = 0;
-        questionDiv.style.display = 'block';
-        answersDiv.style.display = 'flex';
-        timerDiv.style.display = 'block';
-        endScreen.style.display = 'none';
-        scoreDiv.textContent = `درجاتك: ${convertToArabicNumerals(score)}`;
-    }
+        function resetGame() {
+            score = 0;
+            currentRound = 0;
+            questionDiv.style.display = 'block';
+            answersDiv.style.display = 'flex';
+            timerDiv.style.display = 'block';
+            endScreen.style.display = 'none';
+            scoreDiv.textContent = `درجاتك: ${convertToArabicNumerals(score)}`;
+        }
 
-   // دالة تحويل الأرقام الإنجليزية إلى الهندية
-    function convertToArabicNumerals(number) {
-        // تأكد من تحويل الرقم إلى نص ثم استبدال كل الأرقام
-        return number
-            .toString() // تحويل الرقم إلى نص
-            .replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]); // استبدال الأرقام الإنجليزية إلى هندية
-    }
+        // دالة تحويل الأرقام الإنجليزية إلى الهندية
+        function convertToArabicNumerals(number) {
+            // تأكد من تحويل الرقم إلى نص ثم استبدال كل الأرقام
+            return number
+                .toString() // تحويل الرقم إلى نص
+                .replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]); // استبدال الأرقام الإنجليزية إلى هندية
+        }
 
-</script>
+    </script>
 
 
 </body>
