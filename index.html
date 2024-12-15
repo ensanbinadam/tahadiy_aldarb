@@ -75,6 +75,8 @@
             width: 70px;
             height: 40px;
             line-height: 40px;
+            touch-action: none;
+            /* منع السحب الافتراضي */
         }
 
         .answer-card:active {
@@ -114,7 +116,7 @@
 
 <body>
     <h1>لعبة جدول الضرب</h1>
-    <h2>اسحب الإجابة وافلتها في  اطارها</h2>
+    <h2>اسحب الإجابة وافلتها في الإطار</h2>
 
     <div class="question-card" id="question-card">
         <div id="question-1" class="question">
@@ -149,11 +151,6 @@
             return number.toString().replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
         }
 
-        // دالة تحويل الأرقام الهندية إلى الأرقام الإنجليزية (للمقارنة)
-        function convertToEnglishNumerals(number) {
-            return parseInt(number.replace(/[٠-٩]/g, d => '0123456789'['٠١٢٣٤٥٦٧٨٩'.indexOf(d)]));
-        }
-
         function generateRandomQuestion() {
             const table = Math.floor(Math.random() * 10) + 1;
             const number = Math.floor(Math.random() * 10) + 1;
@@ -182,31 +179,17 @@
             return answers.sort(() => Math.random() - 0.5);
         }
 
-        function disableDragAndDrop() {
-            dropZone.removeEventListener("dragover", handleDragOver);
-            dropZone.removeEventListener("drop", handleDrop);
-            Array.from(answersDiv.children).forEach(child => {
-                child.draggable = false;
-            });
-        }
-
-        function enableDragAndDrop() {
-            dropZone.addEventListener("dragover", handleDragOver);
-            dropZone.addEventListener("drop", handleDrop);
-            Array.from(answersDiv.children).forEach(child => {
-                child.draggable = true;
-            });
-        }
-
         function handleDragOver(e) {
             e.preventDefault();
         }
 
         function handleDrop(e) {
+            e.preventDefault();
             const dragged = document.querySelector(".dragging");
-            const selectedAnswer = convertToEnglishNumerals(dragged.textContent);
+            if (!dragged) return;
 
-            dropZone.textContent = dragged.textContent;
+            const selectedAnswer = parseInt(dragged.dataset.value);
+            dropZone.textContent = convertToArabicNumerals(selectedAnswer);
 
             if (selectedAnswer === parseInt(dropZone.dataset.correct)) {
                 dropZone.classList.add("correct");
@@ -215,10 +198,19 @@
                 dropZone.classList.add("wrong");
             }
 
-            disableDragAndDrop();
-
             scoreDiv.textContent = `درجاتك: ${convertToArabicNumerals(score)}`;
             nextBtn.style.display = "inline-block";
+        }
+
+        function enableDragAndDrop() {
+            dropZone.addEventListener("dragover", handleDragOver);
+            dropZone.addEventListener("drop", handleDrop);
+
+            Array.from(answersDiv.children).forEach(card => {
+                card.draggable = true;
+                card.addEventListener("dragstart", () => card.classList.add("dragging"));
+                card.addEventListener("dragend", () => card.classList.remove("dragging"));
+            });
         }
 
         function loadRound() {
@@ -241,17 +233,8 @@
             answers.forEach(answer => {
                 const btn = document.createElement("div");
                 btn.textContent = convertToArabicNumerals(answer);
+                btn.dataset.value = answer;
                 btn.classList.add("answer-card");
-                btn.draggable = true;
-
-                btn.addEventListener("dragstart", () => {
-                    btn.classList.add("dragging");
-                });
-
-                btn.addEventListener("dragend", () => {
-                    btn.classList.remove("dragging");
-                });
-
                 answersDiv.appendChild(btn);
             });
 
