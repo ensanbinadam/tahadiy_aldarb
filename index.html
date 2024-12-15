@@ -224,7 +224,7 @@
         function loadRound() {
             currentRound++;
             if (currentRound > 10) {
-                scoreDiv.textContent = `لعبت 10 بطاقات. درجاتك النهائية: ${convertToArabicNumerals(score)}`;
+                scoreDiv.textContent = `لعبت ${convertToArabicNumerals(10)} بطاقات. درجاتك النهائية: ${convertToArabicNumerals(score)}`;
                 nextBtn.style.display = "none";
                 restartBtn.style.display = "inline-block";
                 return;
