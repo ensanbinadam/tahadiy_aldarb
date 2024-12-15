@@ -68,19 +68,13 @@
             color: #333;
             padding: 10px;
             font-size: 18px;
-            cursor: grab;
+            cursor: pointer;
             border-radius: 8px;
             transition: 0.3s;
             text-align: center;
             width: 70px;
             height: 40px;
             line-height: 40px;
-            touch-action: none;
-            /* منع السحب الافتراضي */
-        }
-
-        .answer-card:active {
-            cursor: grabbing;
         }
 
         .score {
@@ -116,7 +110,7 @@
 
 <body>
     <h1>لعبة جدول الضرب</h1>
-    <h2>اسحب الإجابة وافلتها في الإطار</h2>
+    <h2>اختر الإجابة الصحيحة من الخيارات</h2>
 
     <div class="question-card" id="question-card">
         <div id="question-1" class="question">
@@ -179,17 +173,9 @@
             return answers.sort(() => Math.random() - 0.5);
         }
 
-        function handleDragOver(e) {
-            e.preventDefault();
-        }
-
-        function handleDrop(e) {
-            e.preventDefault();
-            const dragged = document.querySelector(".dragging");
-            if (!dragged) return;
-
-            const selectedAnswer = parseInt(dragged.dataset.value);
-            dropZone.textContent = convertToArabicNumerals(selectedAnswer);
+        function handleAnswerClick(event) {
+            const selectedAnswer = parseInt(event.target.dataset.value);
+            dropZone.textContent = event.target.textContent;
 
             if (selectedAnswer === parseInt(dropZone.dataset.correct)) {
                 dropZone.classList.add("correct");
@@ -198,19 +184,9 @@
                 dropZone.classList.add("wrong");
             }
 
+            Array.from(answersDiv.children).forEach(btn => btn.removeEventListener("click", handleAnswerClick));
             scoreDiv.textContent = `درجاتك: ${convertToArabicNumerals(score)}`;
             nextBtn.style.display = "inline-block";
-        }
-
-        function enableDragAndDrop() {
-            dropZone.addEventListener("dragover", handleDragOver);
-            dropZone.addEventListener("drop", handleDrop);
-
-            Array.from(answersDiv.children).forEach(card => {
-                card.draggable = true;
-                card.addEventListener("dragstart", () => card.classList.add("dragging"));
-                card.addEventListener("dragend", () => card.classList.remove("dragging"));
-            });
         }
 
         function loadRound() {
@@ -235,10 +211,10 @@
                 btn.textContent = convertToArabicNumerals(answer);
                 btn.dataset.value = answer;
                 btn.classList.add("answer-card");
+                btn.addEventListener("click", handleAnswerClick);
                 answersDiv.appendChild(btn);
             });
 
-            enableDragAndDrop();
             nextBtn.style.display = "none";
         }
 
